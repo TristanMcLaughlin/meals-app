@@ -1,45 +1,49 @@
-import React from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
-import {CATEGORIES} from '../data/dummy-data';
+import React from "react";
+import { View, Text, StyleSheet, FlatList } from "react-native";
+import { CATEGORIES, MEALS } from "../data/dummy-data";
+import MealItem from '../components/MealItem';
 
 const CategoryMealsScreen = props => {
-    const catID = props.navigation.getParam('categoryId');
-    const selectedCategory = CATEGORIES.find(cat => cat.id === catID);
-
+  const renderMealItem = itemData => {
     return (
-      <View style={styles.screen}>
-        <Text>Category meals screen</Text>
-        <Text>{selectedCategory.title}</Text>
-        <Button
-          title="Go to meal detail"
-          onPress={() => {
-              // Can use push if going to same screen e.g. folders going to child folder in dropbox
-            props.navigation.navigate("MealDetail");
-          }}
-        />
-        <Button title="Go back" onPress={() => {
-            // can use pop()
-            props.navigation.goBack()
-        }} />
-      </View>
+      <MealItem meal={itemData.item} onSelect={()=>{
+        props.navigation.navigate('MealDetail', {meal: itemData.item.id});
+      }}/>
     );
-}
+  };
 
-CategoryMealsScreen.navigationOptions = (route) => {
-  const catID = route.navigation.getParam('categoryId');
+  const catID = props.navigation.getParam("categoryId");
+  const displayedMeals = MEALS.filter(
+    meal => meal.categoryIds.indexOf(catID) >= 0
+  );
+
+  return (
+    <View style={styles.screen}>
+      <FlatList
+        data={displayedMeals}
+        renderItem={renderMealItem}
+        numColumns={1}
+        style={{width: '100%'}}
+      />
+    </View>
+  );
+};
+
+CategoryMealsScreen.navigationOptions = route => {
+  const catID = route.navigation.getParam("categoryId");
   const selectedCategory = CATEGORIES.find(cat => cat.id === catID);
 
   return {
     title: selectedCategory.title
-  }
-}
+  };
+};
 
 const styles = StyleSheet.create({
-    screen: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
-    }
+  screen: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center"
+  }
 });
 
 export default CategoryMealsScreen;
