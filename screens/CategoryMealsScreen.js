@@ -2,7 +2,6 @@ import React from 'react';
 import { View, Text, StyleSheet, Button } from 'react-native';
 import {CATEGORIES} from '../data/dummy-data';
 
-
 const CategoryMealsScreen = props => {
     const catID = props.navigation.getParam('categoryId');
     const selectedCategory = CATEGORIES.find(cat => cat.id === catID);
